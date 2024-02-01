@@ -17,7 +17,6 @@ def prepareDic():
 prepareDic()
 
 def existedOnIgnore(text):
-    print(text)
     rs = False
     listIg = {}
     file2 = open('ignore.txt', 'r', encoding="utf8")
@@ -66,13 +65,24 @@ class Server(BaseHTTPRequestHandler):
             ignore = query_params.get('ignore', [''])[0]
             if ignore: insertIgnore(ignore)
             lrs = list(all[text_param])
+            min = 10000
+            textmin = 'toi chiu'
             for rs in lrs:
+                if '-' in rs: continue
                 if existedOnIgnore(text_param + ' ' +rs) == False:
-                    result = rs
-                    break
-
-        except:
+                    rs = rs.strip()
+                    if (all.get(rs) == None):
+                        textmin = rs
+                        break
+                    else:
+                        if (list(all[rs]).__len__() < min):
+                            textmin = rs.strip()
+                            min = list(all[rs]).__len__()
+                            if min ==0 : break
+            result = textmin
+        except Exception as e:
+            print(str(e))
+            print('xxxxxxx')
             result = 'Toi chiu'
         self.wfile.write(result.strip().encode('utf-8'))
-
 

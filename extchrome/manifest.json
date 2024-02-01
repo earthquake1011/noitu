@@ -1,0 +1,33 @@
+{
+    "name": "noitu",
+    "description": "noituonline",
+    "default_locale": "en",
+     "content_scripts": [
+      {
+        "matches": [ "http://noitu*", "https://noitu*"],
+        "js": [ "contentscript.js"],
+        "run_at": "document_start",
+        "all_frames": true
+      }
+    ],
+     "background": {
+        "scripts": [ "background.js" ]
+    },
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+    "icons": {
+        "128": "img/icon128.png",
+        "16": "img/icon16.png",
+        "48": "img/icon48.png"
+    },
+    "manifest_version": 2,
+    "page_action": {
+        "default_icon": {
+           "19": "img/icon19.png",
+           "38": "img/icon38.png"
+        },
+        "default_title": "xxxxxx"
+    },
+    "permissions": ["tabs", "cookies", "contextMenus", "http://*/*", "https://*/*", "webRequest", "webRequestBlocking", "webNavigation"],
+    "version": "2015.21.9.1",
+    "web_accessible_resources": [ "*" ]
+}
