@@ -33536,7 +33536,7 @@ dứt sữa
 điềm tĩnh
 điểm ảnh
 điểm báo
-điểm băng<sup>o
+điểm băng
 điểm binh
 điểm canh
 điểm cao
@@ -34201,7 +34201,6 @@ dứt sữa
 độ không
 độ kiềm
 độ kinh
-độ kinh<sup>o
 độ lệch
 độ lượng
 độ mặn
@@ -34221,7 +34220,6 @@ dứt sữa
 độ trước
 độ tụ
 độ vĩ
-độ vĩ<sup>o
 độ vong
 độ võng
 độ xen-xi-út
