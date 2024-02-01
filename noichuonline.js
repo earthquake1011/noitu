@@ -40,7 +40,6 @@ setInterval(function(){
             ev.which = ev.keyCode = 13;
             input.dispatchEvent(ev);
 
-
         }
     }
 },1000)
