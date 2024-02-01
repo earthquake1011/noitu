@@ -1,56 +1,78 @@
 from http.server import BaseHTTPRequestHandler
 import os
-import re
+from urllib.parse import urlparse, parse_qs
 
 all = {}
 
-def process(file, pattern = ''):
-    file1 = open(file, 'r', encoding="utf8")
+def prepareDic():
+    file1 = open('all.txt', 'r', encoding="utf8")
     Lines = file1.readlines()
     for line in Lines:
-        if pattern != '':
-            output = re.findall(pattern, line, flags=re.IGNORECASE)
-            if output.__len__() > 0:
-                tar = output[0]
-                tar = tar.strip().lower()
-                if tar.count(' ') == 1:
-                    if all.get(tar) == None:
-                        all[tar] = 1
-        else :
-            tar = line
-            tar = tar.trip().lower()
-            if tar.count(' ') == 1:
-                if all.get(tar) == None:
-                    all[tar] = 1
+        splited = line.split(' ')
+        if (all.get(splited[0]) != None):
+            all[splited[0]][splited[1]] = 1
+        else : all[splited[0]] = { splited[1] : 1 }        
 
 
-def preprocess() :
-    process('tudien.txt', '^(.*)\n$')
-    lines = list(all.keys())
-    with open('all.txt', 'w', encoding="utf8") as f:
-        for line in lines:
-            f.write(f"{line}\n")
+prepareDic()
 
-preprocess()
+def existedOnIgnore(text):
+    print(text)
+    rs = False
+    listIg = {}
+    file2 = open('ignore.txt', 'r', encoding="utf8")
+    ignores = file2.readlines()
+    for ignore in ignores:
+        listIg[ignore.lower().strip()] = 1
+    if listIg.get(text.lower().strip()) != None:
+        rs = True
+    file2.close()
+    return rs
+
+def insertIgnore(ignoreToInsert):
+    listIg = {}
+    file2 = open('ignore.txt', 'r', encoding="utf8")
+    ignores = file2.readlines()
+    for ignore in ignores:
+        listIg[ignore.strip()] = 1
+    listIg[ignoreToInsert] = 1
+    print(listIg)
+    with open('ignore.txt', 'w', encoding="utf8") as f:
+        for line in listIg:
+            print(listIg)
+            f.writelines(f"{line}\n")
+    file2.close()
 
 class Server(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
-            preprocess()
             self.path = '/index.html'
+            return
+        result = ''
         try:
-            split_path = os.path.splitext(self.path)
-            request_extension = split_path[1]
-            if request_extension != ".py":
-                f = open(self.path[1:]).read()
-                self.send_response(200)
-                self.end_headers()
-                text = getTarget()
-            else:
-                f = "File not found"
-                self.send_error(404,f)
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain; charset=utf-8')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            prepareDic()
+             # Parse query parameters
+            parsed_url = urlparse(self.path)
+            query_params = parse_qs(parsed_url.query)
+            # self.wfile.write(parsed_url.path)
+
+            # Extract the value of the "text" parameter
+            text_param = query_params.get('text', [''])[0]
+            text_param = text_param.lower().strip()
+            ignore = query_params.get('ignore', [''])[0]
+            if ignore: insertIgnore(ignore)
+            lrs = list(all[text_param])
+            for rs in lrs:
+                if existedOnIgnore(text_param + ' ' +rs) == False:
+                    result = rs
+                    break
+
         except:
-            f = "File not found"
-            self.send_error(404,f)
+            result = 'Toi chiu'
+        self.wfile.write(result.strip().encode('utf-8'))
 
 
